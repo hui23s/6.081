@@ -17,8 +17,8 @@ fmtname(char *path)
   // Return blank-padded name.
   if(strlen(p) >= DIRSIZ)
     return p;
-  memmove(buf, p, strlen(p));
-  memset(buf+strlen(p), ' ', DIRSIZ-strlen(p));
+  memmove(buf, p, strlen(p)); //the length from p to string end
+  memset(buf+strlen(p), ' ', DIRSIZ-strlen(p)); // set ‘ ’ from end to dirsiz
   return buf;
 }
 
@@ -27,7 +27,7 @@ ls(char *path)
 {
   char buf[512], *p;
   int fd;
-  struct dirent de;
+  struct dirent de; // directory entry
   struct stat st;
 
   if((fd = open(path, 0)) < 0){
@@ -51,13 +51,13 @@ ls(char *path)
       printf("ls: path too long\n");
       break;
     }
-    strcpy(buf, path);
-    p = buf+strlen(buf);
-    *p++ = '/';
-    while(read(fd, &de, sizeof(de)) == sizeof(de)){
+    strcpy(buf, path); // copy from path to buf
+    p = buf+strlen(buf);//p->buf[strlen(buf)]
+    *p++ = '/'; 
+    while(read(fd, &de, sizeof(de)) == sizeof(de)){ // read return length of file
       if(de.inum == 0)
         continue;
-      memmove(p, de.name, DIRSIZ);
+      memmove(p, de.name, DIRSIZ); // add de.name to p
       p[DIRSIZ] = 0;
       if(stat(buf, &st) < 0){
         printf("ls: cannot stat %s\n", buf);
