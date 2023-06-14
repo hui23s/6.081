@@ -13,6 +13,7 @@ main(int argc, char *argv[]){
   if(fork() == 0){
     pid = getpid();
     
+    close(p1[1]);
     if(read(p1[0], buf, 1) != 1){
       fprintf(2, "child read error\n");
       exit(1);
@@ -21,6 +22,7 @@ main(int argc, char *argv[]){
     close(p1[0]);
     printf("%d: received ping\n", pid);
 
+    close(p2[0]);
     if(write(p2[1], buf, 1) != 1){
       fprintf(2, "child write error\n");
       exit(1);
@@ -33,6 +35,7 @@ main(int argc, char *argv[]){
     pid = getpid();
     buf[0] = 'a';
 
+    close(p1[0]);
     if(write(p1[1], buf, 1) != 1){
       fprintf(2, "parent write error\n");
       exit(1);
@@ -41,6 +44,7 @@ main(int argc, char *argv[]){
     close(p1[1]);
     wait(0);
 
+    close(p2[1]);
     if(read(p2[0], buf, 1) != 1){
       fprintf(2, "parent read error\n");
       exit(1);
