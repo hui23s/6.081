@@ -13,6 +13,9 @@
     "typeinfo": "c",
     "user.h": "c",
     "stat.h": "c",
-    "fs.h": "c"
+    "fs.h": "c",
+    "cmath": "c",
+    "*.tcc": "c",
+    "sysinfo.h": "c"
   }
 }

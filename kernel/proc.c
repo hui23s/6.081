@@ -291,6 +291,8 @@ fork(void)
 
   safestrcpy(np->name, p->name, sizeof(p->name));
 
+  np->mask = p->mask;
+
   pid = np->pid;
 
   np->state = RUNNABLE;
@@ -692,4 +694,17 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+// return the number of processes whose state is not UNUSED.
+int 
+proc_size(void){
+  int n = 0;
+  for (int i = 0; i < NPROC; i++)
+  {
+    if(proc[i].state != UNUSED)
+      n++;
+  }
+  
+  return n;
 }
