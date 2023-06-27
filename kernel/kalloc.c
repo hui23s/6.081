@@ -55,7 +55,7 @@ kfree(void *pa)
   memset(pa, 1, PGSIZE);
 
   r = (struct run*)pa;
-
+  // head_insert
   acquire(&kmem.lock);
   r->next = kmem.freelist;
   kmem.freelist = r;

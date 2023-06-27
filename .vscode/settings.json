@@ -17,6 +17,7 @@
     "cmath": "c",
     "*.tcc": "c",
     "sysinfo.h": "c",
-    "limits": "cpp"
+    "limits": "cpp",
+    "memlayout.h": "c"
   }
 }

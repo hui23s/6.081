@@ -5,6 +5,8 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
+#include "spinlock.h"
+#include "proc.h"
 
 /*
  * the kernel's page table.
@@ -17,11 +19,11 @@ extern char trampoline[]; // trampoline.S
 
 
 pagetable_t
-proc_kpagetable(){
-  pagetable_t kpt;
-  kpt = uvmcreate();
-
-  if(kpt == 0) return 0;
+ukvminit(){
+  pagetable_t kpt = uvmcreate();
+  if(kpt == 0){
+      return 0;
+  }
 
   // uart registers
   uvmmap(kpt, UART0, UART0, PGSIZE, PTE_R | PTE_W);
@@ -46,7 +48,7 @@ void
 uvmmap(pagetable_t kpt, uint64 va, uint64 pa, uint64 sz, int perm)
 {
   if(mappages(kpt, va, sz, pa, perm) != 0)
-    panic("kvmmap");
+    panic("uvmmap");
 }
 
 /*
@@ -166,7 +168,7 @@ kvmpa(uint64 va)
   pte_t *pte;
   uint64 pa;
   
-  pte = walk(kernel_pagetable, va, 0);
+  pte = walk(myproc()->kpagetable, va, 0);
   if(pte == 0)
     panic("kvmpa");
   if((*pte & PTE_V) == 0)
@@ -479,8 +481,7 @@ void
 _vmprint(pagetable_t pagetable, int deep){
   for(int i = 0; i < 512; i++){
     pte_t pte = pagetable[i];
-    if(pte & PTE_V){
-
+    if(pte & (PTE_V)){
       for(int j = 0; j < deep; j ++){
         if(!j) printf("..");
         else printf(" ..");
