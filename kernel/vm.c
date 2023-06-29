@@ -387,6 +387,7 @@ u2kvmcopy(pagetable_t upt, pagetable_t kpt, uint64 begin, uint64 sz)
       panic("u2kvmcopy: page not present");
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte) & (~PTE_U);
+    // flags = PTE_FLAGS(*pte);
     if(mappages(kpt, i, PGSIZE, pa, flags) != 0){
       goto err;
     }
